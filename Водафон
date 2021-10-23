@@ -1,0 +1,106 @@
+create database Vodafon
+  use Vodafon
+
+create table dodatkovi_poslyg (
+kod_dod_poslyg int not null primary key,
+nazva_dod_pos nvarchar(50) not null,
+price money not null,
+description nvarchar(131)
+)
+create table tariff (
+name_tariff nvarchar(131) not null ,
+kod_tariff int not null primary key,
+kod_dod_poslyg int not null
+)
+  alter table tariff
+  add constraint FK_dodatkovi_poslyg_tariff foreign key(kod_dod_poslyg) references dodatkovi_poslyg(kod_dod_poslyg)
+
+create table abonent (
+name nvarchar(131) not null,
+last_name nvarchar(131) not null,
+nomber_phone char(34) primary key,
+name_tariff  nvarchar(131) not null,
+)
+
+ALTER TABLE tariff ADD  
+Tnomber_phone char(34);
+
+alter table tariff
+  add constraint Fk_nomber foreign key(Tnomber_phone) references abonent(nomber_phone)
+
+ create table calls (
+ kod_oper int not null,
+ nomber_phone char(34) not null,
+ id_call int primary key,
+ data_call date not null
+ )
+ alter table calls
+ add constraint FK_calls1 foreign key (nomber_phone) references abonent(nomber_phone)
+ 
+ create table reasons (
+ id_m int primary key,
+ id_calls int not null,
+ name_d char(34) not null,
+ opus char(150) not null,
+ rish char(150) not null
+ )
+ alter table reasons
+ add constraint FK_calls2 foreign key (id_calls) references calls(id_call)
+ 
+ create table operator (
+ id_oper int primary key,
+ na_me char(34) not null,
+ pr char (35) not null,
+ id_sypervizor int not null,
+ nom_calls_center int not null
+ )
+ alter table calls
+ add constraint FK_calls3 foreign key (kod_oper) references operator(id_oper)
+ 
+ create table sypervizor (
+ id_syper int primary key,
+ n_me char(34) not null,
+ p_r char(34) not null,
+ id_oper int not null,
+ id_staroper int not null
+ )
+ alter table sypervizor
+ add constraint FK_calls4 foreign key (id_oper) references operator(id_oper)
+
+ create table stroper ( 
+ n_me char(34) not null,
+ p_r char(34) not null,
+ id_oper int not null,
+ id_staroper int primary key
+ )
+ alter table stroper
+ add constraint FK_calls7 foreign key (id_oper) references operator(id_oper)
+
+ alter table sypervizor
+ add constraint FK_calls8 foreign key (id_staroper) references stroper(id_staroper)
+
+ Create table robm (
+ id_oper int  not null,
+ id_rob int primary key,
+ id_p int not null,
+ id_tex int  not null
+ )
+ alter table operator
+ add constraint FK_calls9 foreign key (id_oper) references robm(id_oper)
+
+ Create table call_cen (
+ nom_calls_center int primary key,
+ c_i char(50) not null,
+ a_d char(50) not null
+ )
+ alter table operator
+ add constraint FK_calls10 foreign key (nom_calls_center) references call_cen(nom_calls_center)
+
+ Create table adm_pid (
+  id_p int primary key,
+  id_tex int  not null,
+  n_me char(50) not null,
+  p_r char(50) not null
+  )
+  alter table robm
+ add constraint FK_calls11 foreign key (id_p) references adm_pid(id_p)
