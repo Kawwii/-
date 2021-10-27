@@ -85,8 +85,8 @@ alter table tariff
  id_p int not null,
  id_tex int  not null
  )
- alter table operator
- add constraint FK_calls9 foreign key (id_oper) references robm(id_oper)
+ alter table robm
+ add constraint FK_calls9 foreign key (id_oper) references operator(id_oper)
 
  Create table call_cen (
  nom_calls_center int primary key,
