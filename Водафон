@@ -241,3 +241,121 @@ VALUES ('1001','69501','2501'),
 ('1007','69507','2507'),
 ('1008','69508','2503'),
 ('1009','69509','2505')
+
+
+select name
+from abonent
+
+select last_name
+from abonent
+where kod_tariff='32804'
+
+select city, adress
+from dbo.calls_center
+where city in ('Київ')
+
+select name,last_name, number_phone, kod_tariff
+from abonent
+where kod_tariff between 32802 and 32807
+
+select last_name, number_phone
+from abonent
+where last_name like '%[с]%'
+
+select last_name, number_phone
+from abonent
+where number_phone like '%[5]%'
+
+select last_name, number_phone
+from abonent
+where number_phone like '066%[3]%'
+
+select last_name, number_phone
+from abonent
+where last_name like '_о%'
+
+select name, number_phone
+from abonent
+where name like '__я%'
+
+select last_name, number_phone
+from abonent
+where number_phone like '050_7%'
+
+select last_name, number_phone
+from abonent
+where number_phone like '0[5,11]%[^9]'
+
+select kod_operatora, name_o, last_name, id_calls_center
+from operator
+where id_calls_center like '57[1,3]%'
+
+select kod_operatora, name_o, last_name, kod_olderoperatora
+from operator
+where kod_olderoperatora like '1000[1,2]%'
+
+select id_reason, id_call, name_reason, descriptions, decision
+from reasons
+where decision like 'о%'
+
+select id_reason, id_call, name_reason, descriptions, decision
+from reasons
+where decision like 'Оператор надає інформацію%'
+
+select COUNT(name_e) as 'кількість'
+from adm_pid
+
+select nazva_dod_pos, price
+from dodatkovi_poslyg
+where price >= 150
+
+select MIN(price) as 'найдешевша додаткова послуга'
+from dodatkovi_poslyg
+
+select avg(price) as 'серед знач'
+from dodatkovi_poslyg
+
+select nazva_dod_pos, description,
+case
+   When price <= 25 then '+'
+   when price =35 then '++'
+   when price >= 1500 then '-'
+ else null
+ End das_d
+ from dodatkovi_poslyg
+
+select id_call, number_phone, data_call,
+case 
+   when kod_operatora >=69508 then '+'
+   when kod_operatora =69501 then '+/+'
+   when kod_operatora =69509 then '-'
+   else null
+   End dad_d
+   from calls
+
+   select name,
+   case 
+   when kod_tariff <= 32804 then 'тариф відсутній'
+   when kod_tariff = 32806 then 'тариф діє один день'
+   when kod_tariff >= 32809 then 'тариф діє'
+   else null
+   End name_di
+   from abonent
+
+   select last_name
+   from abonent
+   Order by last_name
+
+   select decision 
+   from reasons
+   Order by decision
+
+   select name_reason
+   from reasons
+   where name_reason like 'п%'
+
+   select name_tariff 
+   from tariff 
+   where name_tariff like '%4G%'
+
+
