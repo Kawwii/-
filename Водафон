@@ -243,119 +243,157 @@ VALUES ('1001','69501','2501'),
 ('1009','69509','2505')
 
 
-select name
+/*відобразити номр. тел. і прізвище користувача*/
+select name, last_name, number_phone
 from abonent
 
-select last_name
+/*відобразити номр. тел. і прізвище користувача, викорис. код. тарифу*/
+select last_name, name, number_phone
 from abonent
-where kod_tariff='32804'
+where kod_tariff=32804 or kod_tariff=32814
 
+/*відобразити місце знах, центру*/
 select city, adress
 from dbo.calls_center
 where city in ('Київ')
 
+/*айді адміна більше 2504*/
+select name_e, last_name
+from adm_pid
+where id_employee_admpid>=2504
+
+/*відобразити інформацію про користовача, який використовує певні тарифи*/
 select name,last_name, number_phone, kod_tariff
 from abonent
 where kod_tariff between 32802 and 32807
 
+/*відобразити інформацію про користовача, в якого прізвище містить букву 'c'*/
 select last_name, number_phone
 from abonent
 where last_name like '%[с]%'
 
-select last_name, number_phone
+/*відобразити інформацію про користовача,номер якого містить в собі цирфу "5", прізв. "к" і тариф в певних межах */
+select last_name, number_phone, kod_tariff
 from abonent
-where number_phone like '%[5]%'
+where number_phone like '%[5]%' and last_name like '%[к]%' and kod_tariff between 32802 and 32807
 
-select last_name, number_phone
-from abonent
-where number_phone like '066%[3]%'
-
-select last_name, number_phone
-from abonent
-where last_name like '_о%'
-
-select name, number_phone
-from abonent
-where name like '__я%'
-
-select last_name, number_phone
-from abonent
-where number_phone like '050_7%'
-
-select last_name, number_phone
-from abonent
-where number_phone like '0[5,11]%[^9]'
-
-select kod_operatora, name_o, last_name, id_calls_center
-from operator
-where id_calls_center like '57[1,3]%'
-
-select kod_operatora, name_o, last_name, kod_olderoperatora
-from operator
-where kod_olderoperatora like '1000[1,2]%'
-
-select id_reason, id_call, name_reason, descriptions, decision
-from reasons
-where decision like 'о%'
-
-select id_reason, id_call, name_reason, descriptions, decision
-from reasons
-where decision like 'Оператор надає інформацію%'
-
+/* відображає к-сть адмін., які містять букву "о"]*/
 select COUNT(name_e) as 'кількість'
 from adm_pid
+Where last_name like '%[о]%'
 
+/*ціна додаткової послуги більша за 12 грн*/
 select nazva_dod_pos, price
 from dodatkovi_poslyg
-where price >= 150
+where price >= 12 
 
+/*мінімальне знач. дод. послуги*/
 select MIN(price) as 'найдешевша додаткова послуга'
 from dodatkovi_poslyg
 
-select avg(price) as 'серед знач'
-from dodatkovi_poslyg
-
+/* показує привабливі послуги для споживача*/
 select nazva_dod_pos, description,
 case
-   When price <= 25 then '+'
-   when price =35 then '++'
-   when price >= 1500 then '-'
+   When price <= 25 then 'дешева послуга'
+   when price =100 then 'цілком підходить'
+   when price >= 1500 then 'дорога послуга'
  else null
- End das_d
+ End das_d 
  from dodatkovi_poslyg
 
+ /* показує операторів за рівнем кваліфікації*/
 select id_call, number_phone, data_call,
 case 
-   when kod_operatora >=69508 then '+'
-   when kod_operatora =69501 then '+/+'
-   when kod_operatora =69509 then '-'
-   else null
+   when kod_operatora >=69508 then 'хороші оператори'
+   when kod_operatora =69501 then 'середній оператор'
+   when kod_operatora =69509 then 'оператор з низьким. рів кваліф'
+   else 'невизнач оператори'
    End dad_d
    from calls
 
+   /*дійсні тарифи, з поправкою на номера*/
    select name,
    case 
    when kod_tariff <= 32804 then 'тариф відсутній'
    when kod_tariff = 32806 then 'тариф діє один день'
    when kod_tariff >= 32809 then 'тариф діє'
-   else null
+   else 'тариф тимчасово не діє'
    End name_di
    from abonent
+   where number_phone like '0[4;6]%'
 
+   /*стан центру*/
+   select city,
+   Case 
+   when id_calls_center = 571 then 'не працює'
+   when id_calls_center = 572 then 'працює'
+   when id_calls_center = 573 then 'відсутнє світло'
+   else null 
+   End name_adads 
+   from calls_center
+   
+   /*стан стар операторів*/
+   select name_o,
+   case 
+   when kod_sypervizor = 69521 then 'оператор працює'
+   when kod_sypervizor = 69522 then 'оператор у від.'
+   when kod_sypervizor = 69523 then 'оператор непр.'
+   else null
+   end name_o1
+   from operator
+
+   /*код робочого місця оператора більший за 69504*/
+   select kod_workplace
+   from workplace
+   where kod_operatora>=69504
+
+   /*відображає операторів по поряд номеру центру*/
+   select name_o, last_name, kod_operatora
+   from operator
+   order by id_calls_center
+
+   /*сортує операторів по алфавіту і відображає стар. опер*/
+   select kod_olderoperatora, name_o
+   from operator
+   where kod_olderoperatora between 10001 and 10003
+   order by name_o
+
+   /*групує прізв*/
    select last_name
    from abonent
    Order by last_name
 
-   select decision 
+   /*Причина дзвін*/
+   select decision as 'Причина'
    from reasons
+   where id_reason between 62501 and 62511
    Order by decision
 
-   select name_reason
-   from reasons
-   where name_reason like 'п%'
+   /* група перша назва імені в якій поч. з букви 'o'*/
+   select name
+   From abonent
+   Group By name 
+   having name like '[о]%'
 
-   select name_tariff 
-   from tariff 
-   where name_tariff like '%4G%'
+   /*в алфавітному порядку рішення*/
+   select name_reason, decision
+   From reasons
+   where decision like 'а%'
+   order by name_reason
+
+   /*в алфавітному порядку оператори*/
+   select kod_operatora, name_o, last_name
+   from operator
+   Where id_calls_center between 571 and 573
+   order by name_o
+
+   /*об'єд дві таблиці*/
+   select *
+   from tariff cross join abonent
+
+   /*Відображає схожі імена операторів та обонентів*/
+   select name 
+   from operator left join abonent
+   on name=name_o
 
 
